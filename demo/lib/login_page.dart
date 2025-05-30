@@ -1,4 +1,5 @@
 import 'package:demo/color_palette.dart';
+import 'package:demo/main_page.dart';
 import 'package:flutter/material.dart';
 
 class LoginPage extends StatefulWidget {
@@ -76,7 +77,12 @@ class _LoginPageState extends State<LoginPage> {
                 style: FilledButton.styleFrom(
                   backgroundColor: ColorPalette.primaryColor,
                 ),
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(builder: (context) => MainPage()),
+                  );
+                },
                 child: Text("Sign in"),
               ),
             ),
