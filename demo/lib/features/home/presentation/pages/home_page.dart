@@ -1,8 +1,30 @@
-import 'package:demo/color_palette.dart';
+import 'package:demo/core/theme/color_palette.dart';
+import 'package:demo/features/home/domain/entities/shoe.dart';
+import 'package:demo/features/home/presentation/views/banner_view.dart';
+import 'package:demo/features/home/presentation/views/shoe_list_view.dart';
 import 'package:flutter/material.dart';
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
   const HomePage({super.key});
+
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  final List<Shoe> _shoes = [
+    Shoe(
+      id: 1,
+      name: "Adidas Samba",
+      brand: "Adidas",
+      gender: "Men",
+      price: 200,
+      category: "Casual",
+      image:
+          "https://www.fit2run.com/cdn/shop/files/DH5392-007-PHSRH001-1500.png",
+      sizes: [],
+    ),
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -27,28 +49,8 @@ class HomePage extends StatelessWidget {
               ),
             ),
           ),
-          Container(
-            decoration: BoxDecoration(color: ColorPalette.primaryColor),
-            child: Row(
-              children: [
-                Column(
-                  children: [
-                    Text("SALE"),
-                    Text("Up to 30%"),
-                    FilledButton(
-                      style: FilledButton.styleFrom(
-                        foregroundColor: ColorPalette.primaryColor,
-                        backgroundColor: Colors.white,
-                      ),
-                      onPressed: () {},
-                      child: Text("Sign in"),
-                    ),
-                  ],
-                ),
-                Expanded(child: Image.asset("assets/banner.png")),
-              ],
-            ),
-          ),
+          BannerView(),
+          ShoeListView(shoes: _shoes),
         ],
       ),
     );
