@@ -1,4 +1,5 @@
 import 'package:demo/core/theme/color_palette.dart';
+import 'package:demo/features/home/data/datasources/shoe_service.dart';
 import 'package:demo/features/home/domain/entities/shoe.dart';
 import 'package:demo/features/home/presentation/views/banner_view.dart';
 import 'package:demo/features/home/presentation/views/shoe_list_view.dart';
@@ -12,19 +13,20 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  final List<Shoe> _shoes = [
-    Shoe(
-      id: 1,
-      name: "Adidas Samba",
-      brand: "Adidas",
-      gender: "Men",
-      price: 200,
-      category: "Casual",
-      image:
-          "https://www.fit2run.com/cdn/shop/files/DH5392-007-PHSRH001-1500.png",
-      sizes: [],
-    ),
-  ];
+  List<Shoe> _shoes = [];
+
+  Future<void> loadData() async {
+    List<Shoe> shoes = await ShoeService().getShoes();
+    setState(() {
+      _shoes = shoes;
+    });
+  }
+
+  @override
+  void initState() {
+    loadData();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {

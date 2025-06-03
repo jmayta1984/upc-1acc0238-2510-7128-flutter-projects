@@ -30,9 +30,22 @@ class ShoeDto {
       price: json['price'],
       category: json['category'],
       image: json['image'],
-      sizes: (json['sizes'] as List)
+      sizes: (json['sizes_available'] as List)
           .map((e) => ShoeSizeDto.fromJson(e))
           .toList(),
+    );
+  }
+
+  Shoe toDomain() {
+    return Shoe(
+      id: id,
+      name: name,
+      brand: brand,
+      gender: gender,
+      price: price,
+      category: category,
+      image: image,
+      sizes: sizes.map((e) => e.toDomain()).toList(),
     );
   }
 }
@@ -44,7 +57,7 @@ class ShoeSizeDto {
   ShoeSizeDto({required this.size, required this.stock});
 
   factory ShoeSizeDto.fromJson(Map<String, dynamic> json) {
-    return ShoeSizeDto(size: json['size'], stock: json['quantity']);
+    return ShoeSizeDto(size: (json['size'] as num).toDouble(), stock: json['quantity']);
   }
 
   ShoeSize toDomain() {
