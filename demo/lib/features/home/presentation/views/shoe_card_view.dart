@@ -13,7 +13,12 @@ class ShoeCardView extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Expanded(child: Image.network(shoe.image, fit: BoxFit.cover)),
+            Expanded(
+              child: Hero(
+                tag: shoe.id,
+                child: Image.network(shoe.image, fit: BoxFit.cover),
+              ),
+            ),
             Text(
               shoe.name,
               maxLines: 1,

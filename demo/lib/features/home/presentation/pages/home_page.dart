@@ -14,11 +14,13 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   List<Shoe> _shoes = [];
+  List<Shoe> _filteredShoes = [];
 
   Future<void> loadData() async {
     List<Shoe> shoes = await ShoeService().getShoes();
     setState(() {
       _shoes = shoes;
+      _filteredShoes = shoes;
     });
   }
 
@@ -35,6 +37,16 @@ class _HomePageState extends State<HomePage> {
       child: Column(
         children: [
           TextField(
+            onChanged: (value) {
+              setState(() {
+                _filteredShoes = _shoes
+                    .where(
+                      (shoe) =>
+                          shoe.name.toLowerCase().contains(value.toLowerCase()),
+                    )
+                    .toList();
+              });
+            },
             cursorColor: ColorPalette.primaryColor,
             decoration: InputDecoration(
               suffixIcon: Icon(Icons.search),
@@ -52,7 +64,7 @@ class _HomePageState extends State<HomePage> {
             ),
           ),
           BannerView(),
-          ShoeListView(shoes: _shoes),
+          ShoeListView(shoes: _filteredShoes),
         ],
       ),
     );
