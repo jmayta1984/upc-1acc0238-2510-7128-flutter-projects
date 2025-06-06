@@ -9,21 +9,19 @@ class ShoeListView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Expanded(
-      child: GridView.builder(
-        itemCount: shoes.length,
-        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 2,
-        ),
-        itemBuilder: (context, index) => GestureDetector(
-          onTap: () => Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => ShoeDetailPage(shoe: shoes[index]),
-            ),
+    return GridView.builder(
+      itemCount: shoes.length,
+      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 2,
+      ),
+      itemBuilder: (context, index) => GestureDetector(
+        onTap: () => Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => ShoeDetailPage(shoe: shoes[index]),
           ),
-          child: ShoeCardView(shoe: shoes[index]),
         ),
+        child: ShoeCardView(shoe: shoes[index]),
       ),
     );
   }
