@@ -18,10 +18,12 @@ class _HomePageState extends State<HomePage> {
 
   Future<void> loadData() async {
     List<Shoe> shoes = await ShoeService().getShoes();
-    setState(() {
-      _shoes = shoes;
-      _filteredShoes = shoes;
-    });
+    if (mounted) {
+      setState(() {
+        _shoes = shoes;
+        _filteredShoes = shoes;
+      });
+    }
   }
 
   @override
@@ -38,14 +40,17 @@ class _HomePageState extends State<HomePage> {
         children: [
           TextField(
             onChanged: (value) {
-              setState(() {
-                _filteredShoes = _shoes
-                    .where(
-                      (shoe) =>
-                          shoe.name.toLowerCase().contains(value.toLowerCase()),
-                    )
-                    .toList();
-              });
+              if (mounted) {
+                setState(() {
+                  _filteredShoes = _shoes
+                      .where(
+                        (shoe) => shoe.name.toLowerCase().contains(
+                          value.toLowerCase(),
+                        ),
+                      )
+                      .toList();
+                });
+              }
             },
             cursorColor: ColorPalette.primaryColor,
             decoration: InputDecoration(
