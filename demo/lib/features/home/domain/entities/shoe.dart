@@ -7,6 +7,7 @@ class Shoe {
   final String category;
   final String image;
   final List<ShoeSize> sizes;
+  final String description;
 
   Shoe({
     required this.id,
@@ -17,11 +18,12 @@ class Shoe {
     required this.category,
     required this.image,
     required this.sizes,
+    required this.description
   });
 }
 
 class ShoeSize {
-  final double size;
+  final String size;
   final int stock;
 
   ShoeSize({required this.size, required this.stock});
