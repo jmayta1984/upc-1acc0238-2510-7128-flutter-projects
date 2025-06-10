@@ -43,80 +43,98 @@ class _LoginPageState extends State<LoginPage> {
             ).showSnackBar(SnackBar(content: Text(state.message))),
           },
       },
-      child: Scaffold(
-        body: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              TextField(
-                cursorColor: ColorPalette.primaryColor,
-                controller: _usernameController,
-                decoration: InputDecoration(
-                  suffixIcon: Icon(Icons.person),
-                  hintText: "Username",
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8),
-                    borderSide: BorderSide(
-                      width: 2,
-                      color: ColorPalette.primaryColor,
-                    ),
-                  ),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                ),
-              ),
-              SizedBox(height: 8),
-              TextField(
-                cursorColor: ColorPalette.primaryColor,
-                controller: _passwordController,
-                decoration: InputDecoration(
-                  suffixIcon: IconButton(
-                    onPressed: () {
-                      setState(() {
-                        _isVisible = !_isVisible;
-                      });
-                    },
-                    icon: Icon(
-                      _isVisible ? Icons.visibility : Icons.visibility_off,
-                    ),
-                  ),
-                  hintText: "Password",
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8),
-                    borderSide: BorderSide(
-                      width: 2,
-                      color: ColorPalette.primaryColor,
-                    ),
-                  ),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                ),
-                obscureText: !_isVisible,
-              ),
-              SizedBox(height: 8),
-              SizedBox(
-                width: double.infinity,
-                child: FilledButton(
-                  style: FilledButton.styleFrom(
-                    backgroundColor: ColorPalette.primaryColor,
-                  ),
-                  onPressed: () {
-                    context.read<AuthBloc>().add(
-                      LoginEvent(
-                        username: _usernameController.text,
-                        password: _passwordController.text,
+      child: BlocBuilder<AuthBloc, AuthState>(
+        builder: (context, state) {
+          final isLoading = state is LoadingAuthState;
+
+          return Scaffold(
+            body: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Stack(
+                children: [
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      TextField(
+                        cursorColor: ColorPalette.primaryColor,
+                        controller: _usernameController,
+                        decoration: InputDecoration(
+                          suffixIcon: Icon(Icons.person),
+                          hintText: "Username",
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(8),
+                            borderSide: BorderSide(
+                              width: 2,
+                              color: ColorPalette.primaryColor,
+                            ),
+                          ),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                        ),
                       ),
-                    );
-                  },
-                  child: Text("Sign in"),
-                ),
+                      SizedBox(height: 8),
+                      TextField(
+                        cursorColor: ColorPalette.primaryColor,
+                        controller: _passwordController,
+                        decoration: InputDecoration(
+                          suffixIcon: IconButton(
+                            onPressed: () {
+                              setState(() {
+                                _isVisible = !_isVisible;
+                              });
+                            },
+                            icon: Icon(
+                              _isVisible
+                                  ? Icons.visibility
+                                  : Icons.visibility_off,
+                            ),
+                          ),
+                          hintText: "Password",
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(8),
+                            borderSide: BorderSide(
+                              width: 2,
+                              color: ColorPalette.primaryColor,
+                            ),
+                          ),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                        ),
+                        obscureText: !_isVisible,
+                      ),
+                      SizedBox(height: 8),
+                      SizedBox(
+                        width: double.infinity,
+                        child: FilledButton(
+                          style: FilledButton.styleFrom(
+                            backgroundColor: ColorPalette.primaryColor,
+                          ),
+                          onPressed: () {
+                            context.read<AuthBloc>().add(
+                              LoginEvent(
+                                username: _usernameController.text,
+                                password: _passwordController.text,
+                              ),
+                            );
+                          },
+                          child: Text("Sign in"),
+                        ),
+                      ),
+                    ],
+                  ),
+                  if (isLoading)
+                    Center(
+                      child: CircularProgressIndicator(
+                        color: ColorPalette.primaryColor,
+                      ),
+                    ),
+                ],
               ),
-            ],
-          ),
-        ),
+            ),
+          );
+        },
       ),
     );
   }

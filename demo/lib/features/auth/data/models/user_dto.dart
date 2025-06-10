@@ -24,7 +24,7 @@ class UserDto {
       username: json['username'],
       firstName: json['firstName'],
       lastName: json['lastName'],
-      image: json['image'] // Default to empty string if image is null
+      image: json['image']
     );
   }
 

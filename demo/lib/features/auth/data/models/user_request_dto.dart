@@ -1,8 +1,8 @@
-class LoginRequestDto {
+class UserRequestDto {
   final String username;
   final String password;
   
-  const LoginRequestDto({
+  const UserRequestDto({
     required this.username,
     required this.password,
   });

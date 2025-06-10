@@ -9,6 +9,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   AuthBloc() : super(InitialAuthState()) {
     on<LoginEvent>((event, emit) async {
       emit(LoadingAuthState());
+      await Future.delayed(Duration(milliseconds: 1000));
       try {
         User user = await AuthService().login(event.username, event.password);
         emit(SuccessAuthState(user: user));
