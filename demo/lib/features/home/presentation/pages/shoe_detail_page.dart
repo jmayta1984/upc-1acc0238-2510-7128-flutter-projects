@@ -1,6 +1,10 @@
 import 'package:demo/core/theme/color_palette.dart';
+import 'package:demo/features/favorites/domain/entities/favorite_shoe.dart';
+import 'package:demo/features/favorites/presentation/blocs/favorite_bloc.dart';
+import 'package:demo/features/favorites/presentation/blocs/favorite_event.dart';
 import 'package:demo/features/home/domain/entities/shoe.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class ShoeDetailPage extends StatefulWidget {
   const ShoeDetailPage({super.key, required this.shoe});
@@ -16,7 +20,8 @@ class _ShoeDetailPageState extends State<ShoeDetailPage> {
 
   @override
   Widget build(BuildContext context) {
-    final List<ShoeSize> sizes = widget.shoe.sizes;
+    final Shoe shoe = widget.shoe;
+    final List<ShoeSize> sizes = shoe.sizes;
     return Scaffold(
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       floatingActionButton: SizedBox(
@@ -53,6 +58,16 @@ class _ShoeDetailPageState extends State<ShoeDetailPage> {
                           setState(() {
                             _isFavorite = !_isFavorite;
                           });
+                          context.read<FavoriteBloc>().add(
+                            AddFavoriteEvent(
+                              favorite: FavoriteShoe(
+                                id: shoe.id.toString(),
+                                name: shoe.name,
+                                price: shoe.price,
+                                image: shoe.image,
+                              ),
+                            ),
+                          );
                         },
                         icon: Icon(
                           _isFavorite ? Icons.favorite : Icons.favorite_border,
