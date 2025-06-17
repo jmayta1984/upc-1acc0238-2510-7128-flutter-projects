@@ -1,4 +1,8 @@
 import 'package:demo/core/theme/color_palette.dart';
+import 'package:demo/features/auth/presentation/blocs/auth_bloc.dart';
+import 'package:demo/features/auth/presentation/blocs/auth_state.dart';
+import 'package:demo/features/cart/data/datasources/cart_item_service.dart';
+import 'package:demo/features/cart/data/models/cart_item_request_dto.dart';
 import 'package:demo/features/favorites/domain/entities/favorite_shoe.dart';
 import 'package:demo/features/favorites/presentation/blocs/favorite_bloc.dart';
 import 'package:demo/features/favorites/presentation/blocs/favorite_event.dart';
@@ -18,6 +22,7 @@ class ShoeDetailPage extends StatefulWidget {
 class _ShoeDetailPageState extends State<ShoeDetailPage> {
   int _selectedIndex = -1;
   bool _isFavorite = false;
+  String _username = '';
 
   @override
   void initState() {
@@ -29,14 +34,28 @@ class _ShoeDetailPageState extends State<ShoeDetailPage> {
   Widget build(BuildContext context) {
     final Shoe shoe = widget.shoe;
     final List<ShoeSize> sizes = shoe.sizes;
-    return BlocListener<FavoriteBloc, FavoriteState>(
-      listener: (context, state) {
-        if (state is CheckFavoriteState) {
-          setState(() {
-            _isFavorite = state.isFavorite;
-          });
-        }
-      },
+    return MultiBlocListener(
+      listeners: [
+        BlocListener<FavoriteBloc, FavoriteState>(
+          listener: (context, state) {
+            if (state is CheckFavoriteState) {
+              setState(() {
+                _isFavorite = state.isFavorite;
+              });
+            }
+          },
+        ),
+
+        BlocListener<AuthBloc, AuthState>(
+          listener: (context, state) {
+            if (state is SuccessAuthState) {
+              setState(() {
+                _username = state.user.name;
+              });
+            }
+          },
+        ),
+      ],
       child: Scaffold(
         floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
         floatingActionButton: Padding(
@@ -47,7 +66,20 @@ class _ShoeDetailPageState extends State<ShoeDetailPage> {
               style: FilledButton.styleFrom(
                 backgroundColor: ColorPalette.primaryColor,
               ),
-              onPressed: (_selectedIndex >= 0) ? () {} : null,
+              onPressed: (_selectedIndex >= 0)
+                  ? () {
+                      CartItemService().addCartItem(
+                        CartItemRequestDto(
+                          shoeId: shoe.id,
+                          shoeName: shoe.name,
+                          username: _username,
+                          size: sizes[_selectedIndex].size,
+                          quantity: 1,
+                          image: shoe.image,
+                        ),
+                      );
+                    }
+                  : null,
               child: Text("Add to cart"),
             ),
           ),
@@ -89,7 +121,7 @@ class _ShoeDetailPageState extends State<ShoeDetailPage> {
                               );
                             } else {
                               context.read<FavoriteBloc>().add(
-                                RemoveFavoriteEvent(id: shoe.id)
+                                RemoveFavoriteEvent(id: shoe.id),
                               );
                             }
                           },
