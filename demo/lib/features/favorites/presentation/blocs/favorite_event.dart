@@ -14,4 +14,9 @@ class RemoveFavoriteEvent extends FavoriteEvent {
   const RemoveFavoriteEvent({required this.id});
 }
 
+class CheckFavoriteEvent extends FavoriteEvent {
+  final int id;
+  const CheckFavoriteEvent({required this.id});
+}
+
 class GetAllFavoriteEvent extends FavoriteEvent {}

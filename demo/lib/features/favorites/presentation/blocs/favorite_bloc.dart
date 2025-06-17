@@ -23,5 +23,10 @@ class FavoriteBloc extends Bloc<FavoriteEvent, FavoriteState> {
       final favorites = await _repository.fetchAll();
       emit(LoadedFavoriteState(favorites: favorites));
     });
+
+    on<CheckFavoriteEvent>((event, emit) async {
+      final isFavorite = await _repository.checkFavorite(event.id);
+      emit(CheckFavoriteState(isFavorite: isFavorite));
+    });
   }
 }
