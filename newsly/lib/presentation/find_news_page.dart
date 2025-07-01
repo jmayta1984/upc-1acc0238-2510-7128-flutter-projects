@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:newsly/data/news_service.dart';
-import 'package:newsly/domain/news.dart';
 import 'package:newsly/presentation/news_list_view.dart';
 
 class FindNewsPage extends StatefulWidget {
@@ -11,33 +9,36 @@ class FindNewsPage extends StatefulWidget {
 }
 
 class _FindNewsPageState extends State<FindNewsPage> {
-  List<News> _newsList = [];
-
+  String _query = '';
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.only(left: 8, right: 8, top: 16),
       child: Column(
         children: [
-      
           TextField(
             decoration: InputDecoration(
-              hint: Text( 'Search News'),
+              hint: Text('Search News'),
               border: OutlineInputBorder(),
             ),
             onSubmitted: _onSearchSubmitted,
           ),
-          Expanded(child: NewsListView(newsList: _newsList)),
+
+          Expanded(
+            child: _query.isEmpty
+                ? Center(child: Text('Please enter a search query'))
+                : NewsListView(key:ValueKey(_query), query: _query),
+          ),
         ],
       ),
     );
   }
 
-  void _onSearchSubmitted(String query) async {
-
-    final newsList = await NewsService().findNews(query);
-    setState(() {
-      _newsList = newsList;
-    });
+  Future<void> _onSearchSubmitted(String query) async {
+    if (mounted) {
+      setState(() {
+        _query = query;
+      });
+    }
   }
 }

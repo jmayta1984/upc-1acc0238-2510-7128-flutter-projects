@@ -1,35 +1,55 @@
 import 'package:flutter/material.dart';
+import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
+import 'package:newsly/data/news_service.dart';
 import 'package:newsly/domain/news.dart';
 import 'package:newsly/presentation/news_detail_page.dart';
 
-class NewsListView extends StatelessWidget {
-  const NewsListView({super.key, required this.newsList});
-  final List<News> newsList;
+class NewsListView extends StatefulWidget {
+  const NewsListView({super.key, required this.query});
+  final String query;
 
   @override
-  Widget build(BuildContext context) {
-    return ListView.builder(
-      itemCount: newsList.length,
-      itemBuilder: (context, index) {
-        final news = newsList[index];
-        return GestureDetector(
-          onTap:() => Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => NewsDetailPage(news: news),
-            ),
-          ),
-          child: NewsListItemView(news: news));
-      },
-    );
+  State<NewsListView> createState() => _NewsListViewState();
+}
+
+class _NewsListViewState extends State<NewsListView> {
+  late final _pagingController = PagingController<int, News>(
+    getNextPageKey: (state) =>
+        state.lastPageIsEmpty ? null : state.nextIntPageKey,
+    fetchPage: (pageKey) => NewsService().findNews(widget.query, pageKey),
+  );
+
+  @override
+  void dispose() {
+    _pagingController.dispose();
+    super.dispose();
   }
+
+  @override
+  Widget build(BuildContext context) => PagingListener(
+    controller: _pagingController,
+    builder: (context, state, fetchNextPage) => PagedListView<int, News>(
+      state: state,
+      fetchNextPage: fetchNextPage,
+      builderDelegate: PagedChildBuilderDelegate(
+        itemBuilder: (context, news, index) {
+          return GestureDetector(
+            onTap: () => Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => NewsDetailPage(news: news),
+              ),
+            ),
+            child: NewsListItemView(news: news),
+          );
+        },
+      ),
+    ),
+  );
 }
 
 class NewsListItemView extends StatelessWidget {
-  const NewsListItemView({
-    super.key,
-    required this.news,
-  });
+  const NewsListItemView({super.key, required this.news});
 
   final News news;
 

@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:newsly/data/favorite_news_dao.dart';
+import 'package:newsly/domain/favorite_news.dart';
 import 'package:newsly/domain/news.dart';
 
 class NewsDetailPage extends StatefulWidget {
@@ -13,7 +15,25 @@ class _NewsDetailPageState extends State<NewsDetailPage> {
   bool _isFavorite = false;
 
   @override
+  void initState() {
+    super.initState();
+    _checkIfFavorite();
+  }
+
+  Future<void> _checkIfFavorite() async {
+    final isFavorite = await FavoriteNewsDao().checkIfFavorite(
+      widget.news.title,
+    );
+    if (mounted) {
+      setState(() {
+        _isFavorite = isFavorite;
+      });
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final news = widget.news;
     return Scaffold(
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       floatingActionButton: Padding(
@@ -22,15 +42,26 @@ class _NewsDetailPageState extends State<NewsDetailPage> {
           width: double.infinity,
           child: OutlinedButton(
             onPressed: () {
+              if (_isFavorite) {
+                FavoriteNewsDao().removeFavoriteNews(news.title);
+              } else {
+                FavoriteNewsDao().addFavoriteNews(
+                  FavoriteNews(
+                    title: news.title,
+                    author: news.author,
+                    image: news.imageUrl,
+                    description: news.description,
+                  ),
+                );
+              }
+
               if (mounted) {
                 setState(() {
                   _isFavorite = !_isFavorite;
                 });
               }
             },
-            child: Text(
-              _isFavorite ? 'Remove' : 'Add',
-            ),
+            child: Text(_isFavorite ? 'Remove' : 'Add'),
           ),
         ),
       ),
